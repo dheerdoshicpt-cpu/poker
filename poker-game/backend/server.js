@@ -6,6 +6,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const { setupLobbySockets } = require('./lobbyHandler');
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -48,6 +49,8 @@ app.post('/login', (req, res) => {
         res.json({ token, chips: user.chips, username: user.username });
     });
 });
+
+setupLobbySockets(io);
 
 const PORT = 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
