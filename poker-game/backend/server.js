@@ -55,7 +55,7 @@ app.post('/login', (req, res) => {
 });
 
 // Fallback to React index
-app.get('*', (req, res) => {
+app.get(/^(?!\/api).+/, (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
