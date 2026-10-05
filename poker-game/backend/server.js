@@ -5,11 +5,15 @@ const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const path = require('path');
 const { setupLobbySockets } = require('./lobbyHandler');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -48,6 +52,11 @@ app.post('/login', (req, res) => {
         const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET);
         res.json({ token, chips: user.chips, username: user.username });
     });
+});
+
+// Fallback to React index
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 setupLobbySockets(io);
